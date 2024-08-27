@@ -1,28 +1,43 @@
-// Import Pinecone client
-const { PineconeClient } = require('@pinecone-database/pinecone');
+import fetch from 'node-fetch';
 
-// Initialize Pinecone client
-const client = new PineconeClient({
-  apiKey: process.env.PINECONE_API_KEY,
-  environment: 'us-east-1', // or your specific region
-  // Any other required options
-});
+// Define your API key here or load it from environment variables
+const COHERE_API_KEY = "qDXEnu9uDsvelcsG98MaHcbTpAY204EfYhOuFPwo";
 
-const indexName = 'your-index-name';
+// Define the correct Cohere API endpoint
+const endpoint = 'https://api.cohere.com/v1/generate';
 
 export async function POST(req) {
   try {
-    const { vector } = await req.json();
+    const { prompt } = await req.json();
 
-    // Ensure `client.query` is the correct method for querying
-    const result = await client.query({
-      index: indexName,
-      queryRequest: {
-        vector: vector,
-        topK: 10 // Number of top results to return
-      }
+    // Validate the prompt input
+    if (!prompt || prompt.trim().length === 0) {
+      return new Response(JSON.stringify({ error: "Prompt cannot be empty." }), {
+        status: 400,
+        headers: { 'Content-Type': 'application/json' },
+      });
+    }
+
+    // Make the API request to Cohere
+    const response = await fetch(endpoint, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${COHERE_API_KEY}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        model: 'command-xlarge-nightly',
+        prompt: prompt,
+        max_tokens: 100,
+        temperature: 0.7,
+        k: 0,
+        stop_sequences: [],
+      })
     });
 
+    const result = await response.json();
+
+    // Return the result from Cohere
     return new Response(JSON.stringify(result), {
       headers: { 'Content-Type': 'application/json' },
     });

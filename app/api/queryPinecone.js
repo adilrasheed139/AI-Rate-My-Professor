@@ -1,10 +1,9 @@
-// Import the Pinecone client library
-const { Pinecone } = require('@pinecone-database/pinecone');
+import { Pinecone } from '@pinecone-database/pinecone';
 
 // Initialize Pinecone with your API key and controller host URL
 const pinecone = new Pinecone({
-  apiKey: '75141db9-5607-4481-9257-3a23c937b91b', // Replace with your actual API key
-  controllerHostUrl: 'https://rag-7qo9irv.svc.aped-4627-b74a.pinecone.io' // Replace with your actual host URL
+  apiKey: 'qpwuqrfHopSaVCHuh8EpD8sOJmtGn57k9mI1vKIW', // Replace with your actual API key
+  controllerHostUrl: 'https://api.cohere.ai/generate' // Replace with your actual host URL
 });
 
 // Define the index name
@@ -27,7 +26,7 @@ async function queryIndex(queryVector) {
 }
 
 // Example vector to query
-const exampleQueryVector = [/* Your query vector here */];
+const exampleQueryVector = [0.1, 0.2, 0.3, 0.4, 0.5]; // Replace with your actual query vector
 
 // Call the function with the example query vector
 queryIndex(exampleQueryVector);
