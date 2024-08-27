@@ -35,15 +35,22 @@ export async function POST(req) {
     console.log('Received vector:', vector);
 
     // Perform query using the received vector
-    const queryResponse = await index.query({
-      vector,
-      topK: 3
-    });
+    try {
+      const queryResponse = await index.query({
+        vector,
+        topK: 3,
+      });
 
-    // Return the query results
-    return new Response(JSON.stringify(queryResponse), {
-      headers: { 'Content-Type': 'application/json' },
-    });
+      // Log and return the query results
+      console.log('Query response:', queryResponse);
+      return new Response(JSON.stringify(queryResponse), {
+        headers: { 'Content-Type': 'application/json' },
+      });
+    } catch (queryError) {
+      console.error('Query failed:', queryError.message);
+      return new Response('Query failed', { status: 500 });
+    }
+
   } catch (error) {
     console.error('Error:', error.message);
     console.error('Stack trace:', error.stack);
