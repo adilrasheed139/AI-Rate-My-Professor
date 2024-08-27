@@ -34,9 +34,9 @@ export async function POST(req) {
     // Log received vector
     console.log('Received vector:', vector);
 
-    // Simple query for testing
+    // Perform query using the received vector
     const queryResponse = await index.query({
-      vector: Array(768).fill(0.1),
+      vector,
       topK: 3
     });
 
