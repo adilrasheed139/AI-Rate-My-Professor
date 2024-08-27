@@ -1,33 +1,52 @@
-// Import Pinecone client
-const { PineconeClient } = require('@pinecone-database/pinecone');
+import { Pinecone } from '@pinecone-database/pinecone';
+import fetch from 'node-fetch';
 
-// Initialize Pinecone client
-const client = new PineconeClient({
-  apiKey: process.env.PINECONE_API_KEY,
-  environment: 'us-east-1', // or your specific region
-  // Any other required options
-});
-
-const indexName = 'your-index-name';
+// Set global fetch implementation
+globalThis.fetch = fetch;
 
 export async function POST(req) {
   try {
-    const { vector } = await req.json();
-
-    // Ensure `client.query` is the correct method for querying
-    const result = await client.query({
-      index: indexName,
-      queryRequest: {
-        vector: vector,
-        topK: 10 // Number of top results to return
-      }
+    // Initialize Pinecone client
+    const pc = new Pinecone({
+      apiKey: process.env.PINECONE_API_KEY,
     });
 
-    return new Response(JSON.stringify(result), {
+    // Access the Pinecone index
+    const index = pc.Index('rag');
+
+    // Extract and log the request body
+    const body = await req.json();
+    console.log('Received request body:', body);
+
+    const vector = body.embedding;
+
+    // Validate vector
+    if (!Array.isArray(vector) || vector.length !== 768) {
+      console.error('Invalid vector format:', vector);
+      return new Response('Invalid vector format', { status: 400 });
+    }
+
+    if (!vector.every(val => typeof val === 'number')) {
+      console.error('Vector contains non-numeric values:', vector);
+      return new Response('Vector contains non-numeric values', { status: 400 });
+    }
+
+    // Log received vector
+    console.log('Received vector:', vector);
+
+    // Simple query for testing
+    const queryResponse = await index.query({
+      vector: Array(768).fill(0.1),
+      topK: 3
+    });
+
+    // Return the query results
+    return new Response(JSON.stringify(queryResponse), {
       headers: { 'Content-Type': 'application/json' },
     });
   } catch (error) {
-    console.error('Error:', error);
+    console.error('Error:', error.message);
+    console.error('Stack trace:', error.stack);
     return new Response('Internal Server Error', { status: 500 });
   }
 }
