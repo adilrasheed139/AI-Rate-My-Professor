@@ -2,7 +2,7 @@ import { Pinecone } from '@pinecone-database/pinecone';
 
 // Initialize Pinecone with your API key and controller host URL
 const pinecone = new Pinecone({
-  apiKey: 'qpwuqrfHopSaVCHuh8EpD8sOJmtGn57k9mI1vKIW', // Replace with your actual API key
+  apiKey: 'qDXEnu9uDsvelcsG98MaHcbTpAY204EfYhOuFPwo', // Replace with your actual API key
   controllerHostUrl: 'https://api.cohere.ai/generate' // Replace with your actual host URL
 });
 
