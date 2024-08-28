@@ -21,9 +21,14 @@
     "next": "14.2.5",
     "node-fetch": "^3.3.2",
     "openai": "^4.56.0",
+<<<<<<< HEAD
     "pinecone-client": "^2.0.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
+=======
+    "react": "^18",
+    "react-dom": "^18",
+>>>>>>> d41bcffa6fc3e8b1c5f871653303566bdf0b0a97
     "web-streams-polyfill": "^4.0.0"
   },
   "devDependencies": {
